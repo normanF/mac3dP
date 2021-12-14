@@ -1,0 +1,30 @@
+model {
+
+  for(i in 1:I){
+      y_f[i] ~ dbin(p_f[i], n[i])
+      probit(p_f[i]) <- -c[i] 
+      
+    for(j in 1:J){
+      y_h[i,j] ~ dbin(p_h[i,j], s[i,j])
+      
+      # MAC link
+      probit(p_h[i,j]) <- ( dprime0[i,j] * (alpha[i] > beta[j]) )/2 - c[i]
+      
+      # model
+      dprime0[i,j] <- dprime[i,j] * (dprime[i,j] > 0)
+      dprime[i,j] <- theta[i] * (alpha[i] - beta[j]) 
+    }
+    
+    alpha[i] ~ dnorm(0, prec_alpha)
+    theta[i] ~ dnorm(0, prec_theta) T(0,)
+    c[i] ~ dnorm(0,2)
+  }
+
+  for(j in 1:J){
+    beta[j] ~ dnorm(0, 1)
+  }
+
+  prec_alpha ~ dgamma(2, 1)
+  prec_theta ~ dgamma(2, 1)
+
+}
