@@ -1,5 +1,5 @@
 # fitting behavioral 1-AFC data with the mac3 model
-# clears workspace:  
+# clear workspace:  
 rm(list=ls()) 
 library(rjags)
 

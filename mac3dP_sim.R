@@ -10,7 +10,6 @@ J = 6   # Number of items (ie, stimulus intensities / durations)
 
 alpha = rnorm(I, 0, .5) # ability or latent true score
 theta = abs(rnorm(I,0,1)) # improvement parameter/slope
-#theta = rgamma(I,2,1)
 beta = c(2,1,seq(0,-3, len=J-2)) # item/stimulus difficulty, center stimuli at 0 indicating duration/intensity at or slightly above chance performance
 
 q = pmax(outer(alpha, beta, '-') * theta, 0) # this is going to be simulated true/latent dprime
@@ -47,7 +46,7 @@ hr_hauted <- as.matrix(yY_hauted[,seq(2,ncol(y_Yes),1)]/s_hauted)
 fA_hauted <- as.matrix(yY_hauted[,1]/n_hauted)
 dP <- qnorm(hr_hauted) - qnorm(matrix(rep(fA_hauted,ncol(y_h)),nrow=nrow(y_h),ncol=ncol(y_h)))
 
-####### End simulation of data (see bottom of script for an alternative simulation approach)
+####### End simulation of data (see bottom of script for an alternative but equivalent simulation approach)
 
 #### Begin analysis
 # Needed variables:
@@ -70,7 +69,7 @@ forJags <- list(
 )
 
 # Number of MCMC iterations
-## For real data you probably want many more, 4000 is only for testing
+## 4000 is only for testing
 M = 40000
 
 ## compile JAGS
@@ -137,19 +136,13 @@ legend(0.6,1,1:J,1:J,1:J,ncol = 6)
 x_est = colMeans(x_cols)
 dim(x_est) = c(I,J)
 crit_est = colMeans(c_cols)
-#p_est = cbind(pnorm(-crit_est),pnorm(x_est/2 - matrix(rep(crit_est,J),nrow=I,ncol=J)))
 p_est = pnorm(x_est/2 - matrix(rep(crit_est,J),nrow=I,ncol=J))
-#p_est = x_est * (x_est > 0)
-#p_est = (pnorm(p_est) - .5) * 2 * ( 1-chance.p ) + chance.p
-#pstar_est = (pnorm(x_est) - .5) * 2 * ( 1-chance.p ) + chance.p
 std_resid = (y_h - s*p_est) / sqrt(s*p_est * ( 1 - p_est) )
 #std_resid = (y_Yes - cbind(n,s)*p_est) / sqrt(cbind(n,s)*p_est * ( 1 - p_est) )
 
-#plot(pstar_est, std_resid, pch=19, col="black", ylab="Standardized residual", xlab="Transformed prediction")
 plot(p_est, std_resid, pch=19, col="black", ylab="Standardized residual", xlab="Transformed prediction")
 for(i in 1:I)
   lines(p_est[i,],std_resid[i,],lty=1, col="gray")
-  #lines(pstar_est[i,],std_resid[i,],lty=1, col="gray")
 abline(h=0, lty=2)
 #abline(v=mean(p_est[,1]))
 abline(h=c(-1.96,1.96), col="red", lty=2)
@@ -204,7 +197,6 @@ for (i_subj in 1:I)
     {internalResponse = rnorm(1)*sqrt(variance)+signalMean[i_subj,5]}
     if (stim[i] == 6) #STH trial
     {internalResponse = rnorm(1)*sqrt(variance)+signalMean[i_subj,6]}
-    
     
     #Decision:
     resp[i] = internalResponse>criterion[i_subj]
