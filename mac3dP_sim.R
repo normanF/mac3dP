@@ -1,3 +1,7 @@
+
+# Simulate unidimensional SDT data  ---------------------------------------
+# best is to execute line by line
+
 # clear workspace:  
 rm(list=ls()) 
 if (!require("rjags")) install.packages("rjags")
@@ -163,9 +167,8 @@ abline(v=0, col="gray",lty=2)
 legend(0.6,0.89,1:J,1:J,1:J,ncol = 6)
 
 
-#######################################
-# alternative data simulation approach#
-#######################################
+
+# alternative data simulation approach ------------------------------------
 nTrials = 1340
 noiseMean = 0
 y_f<- rep(0,I)
